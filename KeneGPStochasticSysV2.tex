@@ -1,0 +1,86 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{mathpazo}
+\setmainfont
+     [ BoldFont       = texgyrepagella-bold.otf ,
+       ItalicFont     = texgyrepagella-italic.otf ,
+       BoldItalicFont = texgyrepagella-bolditalic.otf ]
+     {texgyrepagella-regular.otf}
+\setmainfont{Gill Sans MT}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{physics}
+
+%\DeclareMathOperator{\Tr}{Tr}
+
+\title{Reachability for Stochastic Systems with Gaussian Process Disturbances}
+
+\author{David McPherson}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Motivation and Intellectual Merit}
+Our proposal is to specialize the stochastic reachability problem to when the continuous dynamics are deterministic control affine with an additive Gaussian process disturbance.
+We will view reachability as a stochastic optimal control problem trying to maximize the expected value of staying within a safe set $A$ and use dynamic programming to solve.
+By narrowing our problem focus, we hope to simplify the dynamic programming approach discussed in Bertsekas [1] and produce a more tractable algorithm.
+
+\subsection{Problem Definition}
+We investigate the control-affine problem with a Gaussian process disturbance dependent on the state. These dynamics are of the form:
+
+\begin{equation}
+\dot{x} = f(x,u) = h(x) + g(x) u + D(x)
+\end{equation}
+
+where:
+
+\begin{equation}
+D(x) ~ GP(m(x),K(x,x'))
+\end{equation}
+
+with mean function $m(x)$ and variance kernel $K(x,x')$.
+
+\subsection{Potential Applications}
+\subsubsection{Regression Models}
+In doing so we will obtain an efficient algorithm for a subset of problems that turns up often in applications. Gaussian processes are a powerful regression tool often used to model probabilistic or unknown processes. Akametalu, Fisac, et. al [2] used Gaussian processes to estimate the deterministic state-dependent disturbance. They then set the disturbance at a point $x$ to be drawn from the set $[\mu(x)-2\sigma(x) , \mu(x)+2\sigma(x)]$ which is true 95.5\% of the time.
+
+However, this funnels the rich fullness of the probability distribution into a mere range of numbers. This throws away layers of valuable information about how likely the disturbance is to attain certain values. In essence, reducing it to just a set looks at mostly the GP's mean to say what values the disturbance can attain. Whereas, using the full distribution uses the mean and the variance too. Here we seek to use the Gaussian process fit as the actual disturbance model in a stochastic system rather than a non-deterministic one. Although the disturbance may actually be deterministic, using the probability distribution in our analysis captures information about how certain we are of our estimate of the deterministic disturbance.
+\subsubsection{*Some* Noisily Rational Agents}
+This Gaussian-process Reachability analysis applies to other problems as well. A noisily rational agent penalizing high velocities will transition according to a Gaussian process. This could be valuable when performing decentralized collision avoidance between two planes in flight for example.
+\subsection{Future Use}
+Finally, this work will contribute a valuable alternative to non-deterministic reachability analysis common in the Hybrid Systems Lab at UC Berkeley. Gaussian processes are the most common modeling technique for stochastic systems, and so if a researcher wanted to explore the space of stochastic reachability further, this work forms a solid stepping stone from which to leap off of.
+
+\section{Plan}
+\subsection{Short Term : Weeks 1-2}
+\begin{itemize}
+\item Complete stochastic optimal control literature review.
+\item Analyze framework for optimal control substituting in Gaussian Process transitions.
+\item Look into algorithmic simplifications over standard stochastic optimal control given GP use.
+\end{itemize}
+
+\subsection{Long Term : Weeks 2-6}
+\begin{itemize}
+\item Code dynamic program for probabilistic reachability.
+\item Test on simulation of cart-pole system a la Akametalu, Fisac et. al [2].
+\item Coordinate with Jaime and Kene to replicate CDC2014 results on experimental platform.
+\item Document code on GitHub for labmates and make MATLAB interface.
+\end{itemize}
+
+\section{Conclusion}
+We will focus the reachability analysis of stochastic systems to those with additive Gaussian Process (GP) disturbances, thereby simplifying the dynamic programming problem. Gaussian processes are a broadly used model due to its simplicity and a well-studied regression technique. Due to this wide use, our stochastic system analysis will apply to a number of interesting cases, most notably for better leveraging information from online disturbance learning. It'll be awesome.
+
+\section{Bibliography}
+\begin{enumerate}
+\item Bertsekas, D. P., \& Shreve, S. E. (1996). Stochastic Optimal Control: The Discrete-Time Case (Athena Scientific, Belmont, MA).
+
+\item Akametalu, A. K., Fisac, J. F., Gillula, J. H., Kaynama, S., Zeilinger, M. N., \& Tomlin, C. J. (2014, December). Reachability-based safe learning with gaussian processes. In Decision and Control (CDC), 2014 IEEE 53rd Annual Conference on (pp. 1424-1431). IEEE.
+\end{enumerate}
+
+\end{document}
